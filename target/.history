@@ -1,0 +1,16 @@
+exit
+ls
+run
+test
+run
+ls
+run
+quit
+exit
+clean
+exit
+sbt clean-files
+sbt clean-file
+clean clean-files
+clean-files
+exit
