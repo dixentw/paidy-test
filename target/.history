@@ -14,3 +14,14 @@ sbt clean-file
 clean clean-files
 clean-files
 exit
+run
+scala
+scala version
+help
+about
+run
+help
+run
+test
+help
+test
