@@ -13,4 +13,10 @@ class MenuSpec extends FlatSpec {
       assert(v <= 15)
     }
   }
+  "the menu id" should "betwen 1 to 50" in {
+    assert(Menu.isExist(1))
+    assert(Menu.isExist(35))
+    assert(!Menu.isExist(-1))
+    assert(!Menu.isExist(70))
+  }
 }
