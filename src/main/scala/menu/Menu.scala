@@ -12,11 +12,9 @@ object Menu {
     (m, i) => m + (i -> (5+r.nextInt(prepareInterval(1)-prepareInterval(0)+1)))
   }
 
-  println(items)
+  def getItems(): Seq[(Int, Int)] = items.toSeq
 
-  def getItems(): Seq[(Int, Int)] = {
-    return items.toSeq
-  }
+  def prepareTime(itemId: Int): Int = items(itemId)
 
   def isExist(item: Int): Boolean = {
     items.contains(item)

@@ -1,3 +1,6 @@
+import orderstore._
+
 object Main extends App {
-  println("fefefeefe")
+  val o = new Order()
+  println("fefefeefe {}", o)
 }
