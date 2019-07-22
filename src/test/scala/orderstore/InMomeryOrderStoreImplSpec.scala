@@ -148,4 +148,10 @@ class OrderStoreImplSpec extends FlatSpec {
     assert(res.length == 2)
     assert(res.flatten.length == 1)
   }
+
+  "OrderStoreImpl addOrders" should "success when add orders with new version" in {
+    val res = InMemoryOrderStoreImpl.addOrders((1,2,1), (1,2,2))
+    assert(res.length == 2)
+    assert(res.flatten.length == 2)
+  }
 }
