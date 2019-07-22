@@ -2,7 +2,7 @@ package menu
 
 import scala.util.Random
 
-//Menu generate items
+// Menu generate items and prepare time
 object Menu {
 
   private val prepareInterval = Array(5, 15)

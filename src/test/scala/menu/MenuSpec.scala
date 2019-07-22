@@ -19,6 +19,4 @@ class MenuSpec extends FlatSpec {
     assert(!Menu.isExist(-1))
     assert(!Menu.isExist(70))
   }
-  "the menu" should "not be change" in {
-  }
 }
