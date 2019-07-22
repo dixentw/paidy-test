@@ -127,7 +127,7 @@ class OrderStoreImplSpec extends FlatSpec {
   }
 
   "OrderStoreImpl queryOrderByTable" should "return zero order of given table" in {
-    val res = InMemoryOrderStoreImpl.queryOrderByTable(1)
+    val res = InMemoryOrderStoreImpl.queryOrderByTable(1).filter(_.itemCount != 0)
     assert(res.length==0)
   }
 

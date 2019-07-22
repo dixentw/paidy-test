@@ -50,25 +50,23 @@ object InMemoryOrderStoreImpl extends OrderStore {
     if (!Menu.isExist(itemId)) throw new NoSuchOrderException("invalid item")
 
     val vKey = versionKey(tableId, itemId)
+    rwLock.writeLock().lock()
+    if (version.contains(vKey) && ver != version(vKey)) {
+      rwLock.writeLock().unlock()
+      throw new ModifyException("old version")
+    } else {
+      version += (vKey -> (version.getOrElse(vKey, 0) + 1))
+    }
     if (mStore.contains(tableId)) {
       if (mStore(tableId).contains(itemId)) {
-        if (ver != version(vKey)) throw new ModifyException("old version")
-        rwLock.writeLock().lock()
         mStore(tableId)(itemId) = mStore(tableId)(itemId) + 1
-        version(vKey) = version(vKey) + 1
-        rwLock.writeLock().unlock()
       } else {
-        rwLock.writeLock().lock()
         mStore(tableId) += (itemId -> 1)
-        version += (vKey -> 1)
-        rwLock.writeLock().unlock()
       }
     } else {
-      rwLock.writeLock().lock()
       mStore += (tableId -> Map[Int, Int](itemId -> 1))
-      version += (vKey -> 1)
-      rwLock.writeLock().unlock()
     }
+    rwLock.writeLock().unlock()
     new Order(tableId, itemId, mStore(tableId)(itemId), Menu.prepareTime(itemId), version(vKey))
   }
 
