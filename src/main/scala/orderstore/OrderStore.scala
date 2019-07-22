@@ -7,10 +7,18 @@ package orderstore
 trait OrderStore {
     // return valid menu ids to client
     def queryMenu(): Seq[Int]
+
     // return orders for given table
     def queryOrderByTable(tableId: Int): Seq[Order]
-    // add an order to given table
+
+    // add orders to given table, return the options with the same amount of orders
+    // if there was an error to add some order, the option will be None
     def addOrders(orders: (Int, Int, Int)*): Seq[Option[Order]]
+
+    // add an order to given table
+    @throws(classOf[ModifyException])
+    @throws(classOf[NoSuchOrderException])
+    def incrOrder(tableId: Int, itemId: Int, ver: Int): Order
     // remove an order from a given table
     @throws(classOf[ModifyException])
     @throws(classOf[NoSuchOrderException])

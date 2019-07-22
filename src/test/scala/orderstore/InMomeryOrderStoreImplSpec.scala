@@ -133,7 +133,7 @@ class OrderStoreImplSpec extends FlatSpec {
 
   // multi operation
   "OrderStoreImpl addOrders" should "add many orders to data store" in {
-    val res = InMemoryOrderStoreImpl.addOrders((1,1,0), (1,2,0), (1,3,0))
+    val res = InMemoryOrderStoreImpl.addOrders((2,1,0), (2,2,0), (2,3,0))
     assert(res.length==3)
     for (order <- res) {
       order match {
@@ -144,13 +144,13 @@ class OrderStoreImplSpec extends FlatSpec {
   }
 
   "OrderStoreImpl addOrders" should "failed at some case that add order with old version" in {
-    val res = InMemoryOrderStoreImpl.addOrders((1,1,1), (1,1,0))
+    val res = InMemoryOrderStoreImpl.addOrders((2,1,1), (2,1,1))
     assert(res.length == 2)
     assert(res.flatten.length == 1)
   }
 
   "OrderStoreImpl addOrders" should "success when add orders with new version" in {
-    val res = InMemoryOrderStoreImpl.addOrders((1,2,1), (1,2,2))
+    val res = InMemoryOrderStoreImpl.addOrders((3,2,0),(3,2,1))
     assert(res.length == 2)
     assert(res.flatten.length == 2)
   }

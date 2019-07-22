@@ -27,17 +27,17 @@ object InMemoryOrderStoreImpl extends OrderStore {
               version.getOrElse(versionKey(tableId, item), 1))
       }.toSeq
       rwLock.writeLock().unlock()
-      res
+      res//.filter(_.itemCount != 0)
     }
   }
 
-  override def addOrders(orders: (Int, Int, Int)*): Seq[Option[Order]] = {
+  override def addOrders(orders: (Int, Int, Int)*): Seq[Option[Order]] = synchronized {
     orders.map {
       case (table, item, ver) => {
         try {
           Some(incrOrder(table, item, ver))
         } catch {
-          case _ : Exception => None
+          case e : Exception => None
         }
       }
     }.toSeq
@@ -77,15 +77,16 @@ object InMemoryOrderStoreImpl extends OrderStore {
   override def removeOrder(tableId: Int, itemId: Int, ver: Int): Order = synchronized {
     if (tableId  < 1 || tableId > 100) throw new NoSuchOrderException("invalid table")
 
-    if (mStore.contains(tableId) && mStore(tableId).contains(itemId)) {
+    if (mStore.contains(tableId)
+      && mStore(tableId).contains(itemId)
+      && mStore(tableId)(itemId) > 0
+    ) {
       val vKey = versionKey(tableId, itemId)
-      if (ver == version(vKey)) throw new ModifyException("old version")
+      if (ver != version(vKey)) throw new ModifyException("old version")
 
       rwLock.writeLock().lock()
-      var cnt = mStore(tableId)(itemId)
-      cnt -= 1
-      if (cnt == 0) mStore(tableId) -= itemId
-      else mStore(tableId)(itemId) = cnt
+      var cnt = mStore(tableId)(itemId) - 1
+      mStore(tableId)(itemId) = cnt
 
       version(vKey) = version(vKey) + 1
       rwLock.writeLock().unlock()

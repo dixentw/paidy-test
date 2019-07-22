@@ -19,6 +19,7 @@
     * output: boolean indicating successful
 3. remove order (table number, item id)
     * output: boolean indicating successful
+    * remain zero item, don't want to remove the version key
 4. query orders
     * input (table number)
     * output item, count of that item, prepare time
