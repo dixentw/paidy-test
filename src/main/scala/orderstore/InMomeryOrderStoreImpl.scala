@@ -21,7 +21,7 @@ object InMemoryOrderStoreImpl extends OrderStore {
   override def queryOrderByTable(tableId: Int): Seq[Order] = {
     if (!mStore.contains(tableId)) Seq()
     else{
-      rwLock.writeLock().lock()
+      rwLock.readLock().lock()
       val res = mStore(tableId).map {
         case (item, count) => new Order(tableId,
               item,
@@ -29,7 +29,7 @@ object InMemoryOrderStoreImpl extends OrderStore {
               Menu.prepareTime(item),
               version.getOrElse(versionKey(tableId, item), 1))
       }.toSeq
-      rwLock.writeLock().unlock()
+      rwLock.readLock().unlock()
       res
     }
   }
@@ -37,7 +37,8 @@ object InMemoryOrderStoreImpl extends OrderStore {
   // wrapper function for batch add, it is synchronized because I want it execute a batch
   // as whole for one thread. that is easier to assert the result.
   override def addOrders(orders: (Int, Int, Int)*): Seq[Option[Order]] = synchronized {
-    orders.map {
+    rwLock.writeLock().lock()
+    val res = orders.map {
       case (table, item, ver) => {
         try {
           Some(incrOrder(table, item, ver))
@@ -46,6 +47,8 @@ object InMemoryOrderStoreImpl extends OrderStore {
         }
       }
     }.toSeq
+    rwLock.writeLock().unlock()
+    res
   }
 
   // incrOrder : change the state of storage, only one thread can execute it at one time.

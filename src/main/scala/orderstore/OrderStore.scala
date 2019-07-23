@@ -17,7 +17,7 @@ trait OrderStore {
     // add orders to given table, return the options with the same amount of orders
     // if there was an error to add some order, the option will be None
     // FIXME: issue: the result is undeterminated.
-    // For N orders with same table and item, there is no guarentee that final N valid result will be M + N (M is previous item count) 
+    // For N orders with same table and item, there is no guarentee that final N valid result will be M + N (M is previous item count)
     def addOrders(orders: (Int, Int, Int)*): Seq[Option[Order]]
 
     // add an order to given table, it throws ModifyException if the given ver is not current version.

@@ -11,7 +11,7 @@
     - server/client communicate through simple api call
     - server api should be easy to translate to REST call
 1. for effecient query the orders, I adopt optimistic lock concept. While query the orders from server, server respond with version key, implemented as integer. When client modify one order, if the order has been updated, the version key will be incremented, therefore the modification will throw exception.
- 
+
 
 ## Server
 1. Singletone
